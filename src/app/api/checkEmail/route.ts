@@ -22,17 +22,14 @@ const createClient = () => new ImapFlow({
 //Main function to fetch emails from the IMAP server
 async function fetchEmails() {
     const client = createClient();
-    console.log('Starting email fetch...'); //debugging log
     
     try {
         //Establish connection to the IMAP server
         await client.connect();
-        console.log('Connected to IMAP server');
         
         //Use a lock on the INBOX mailbox
         //Locks prevent simultanous operations from interferring with our current operation
         const lock = await client.getMailboxLock('INBOX');
-        console.log('Acquired mailbox lock');
         
         try {
             const emails = [];
@@ -43,7 +40,7 @@ async function fetchEmails() {
                 bodyStructure: true,
                 source: true,
             })) {
-                console.log(`Processing message ${message.uid}`);
+                
                 
                 try {
                     //Extract relevant information from each message
@@ -60,13 +57,11 @@ async function fetchEmails() {
                 }
             }
             
-            console.log(`Processed ${emails.length} emails`);
             return emails;
             
         } finally {
             //Release the lock when done
             lock.release();
-            console.log('Released mailbox lock');
         }
     } catch (error) {
         console.error('Error in fetchEmails:', error);
@@ -75,7 +70,7 @@ async function fetchEmails() {
         //Logout once done
         try {
             await client.logout();
-            console.log('Logged out successfully');
+
         } catch (logoutError) {
             console.error('Error during logout:', logoutError);
         }
@@ -84,7 +79,6 @@ async function fetchEmails() {
 
 //API handler for GET requests 
 export async function GET(req: NextRequest) {
-    console.log('Starting GET request handler');
     
     try {
         const emails = await fetchEmails();
