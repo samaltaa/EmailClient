@@ -11,47 +11,66 @@ function Inbox(){
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch('/api/checkEmail')
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.success) {
-                setData(data.emails);
-            } else {
-                setError(data.error || "Failed to load emails");
+        const fetchEmails = async () => {
+            try {
+                const response = await fetch('/api/checkEmail');
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || 'Failed to fetch emails');
+                }
+                
+                if (result.success) {
+                    setData(result.emails);
+                } else {
+                    throw new Error(result.error || 'Failed to load emails');
+                }
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
-        })
-        .catch((err) => {
-            setError(err.message);
-            setLoading(false);
-        });
+        };
+
+        fetchEmails();
     }, []);
 
-    if (isLoading) {
-        return <div>Loading...</div>
-    }
+    if (isLoading) return (
+        <div className="flex justify-center items-center p-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-900">  </div>
+        </div>
+    );
 
-    if (error) {
-        return <div>Error: {error}</div>
-    }
+    if (error) return (
+        <div className="p-4 text-red-600 bg-red-50 rounded-md">
+            Error: {error}
+        </div>
+    );
 
     return(
-        <div>
+        <div className="p-4">
             {data && data.length > 0 ? (
-                <ul>
+                <ul className="space-y-4">
                     {data.map((email, index) => (
-                        <li key={index}>
-                            <strong>From:</strong> {email.from} <br />
-                            <strong>Subject:</strong> {email.subject} <br />
-                            <strong>Content:</strong> <div>{email.content}</div>
+                        <li key={email.uid || index} className="border rounded-lg p-4 shadow-sm">
+                            <div className="text-sm text-gray-500">
+                                {new Date(email.date).toLocaleString()}
+                            </div>
+                            <div className="font-medium">
+                                From: {email.from.map(f => f.name || f.address).join(', ')}
+                            </div>
+                            <div className="font-bold">
+                                {email.subject}
+                            </div>
+                            <div className="mt-2 text-gray-700 whitespace-pre-wrap">
+                                {email.content}
+                            </div>
                         </li>
                     ))}
                 </ul>
             ) : (
-                <p>No emails found.</p>
-            )
-
-            }
+                <p className="text-center text-gray-500">No emails found.</p>
+            )}
         </div>
     )
 }
