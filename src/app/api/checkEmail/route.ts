@@ -1,10 +1,15 @@
 /*
 THIS ROUTE WILL FETCH THE IMAP DATA 
 
-TODO: remove all the debugging logs 
+TODO: develop all the TODO blocks
 */
 import { NextRequest, NextResponse } from 'next/server';
 import { ImapFlow } from 'imapflow';
+import { simpleParser } from 'mailparser';
+
+//TODO: Helper function to convert stream to buffer
+
+
 
 //this function creates a new IMAP client with the required configurations
 //the function will return our customized ImapFloq instance
@@ -39,16 +44,25 @@ async function fetchEmails() {
                 envelope: true,
                 bodyStructure: true,
                 source: true,
+               //TODO: bodyParts: ['TEXT', 'HEADER'], // Request email content
             })) {
-                
-                
                 try {
+                    
+                    //TODO: Download the full email content 
+
+
+                    //TODO: Convert stream to buffer and parse
+                    
+
                     //Extract relevant information from each message
                     emails.push({
                         uid: message.uid,
                         subject: message.envelope?.subject || 'No Subject',
                         from: message.envelope?.from?.[0]?.address || 'Unknown',
                         date: message.envelope?.date || new Date(),
+                        //TODO: get plain text content and HTML content if possible
+
+
                         // For testing, just get the raw source
                         content: message.source?.toString() || 'No content'
                     });
