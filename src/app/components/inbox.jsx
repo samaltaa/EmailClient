@@ -18,11 +18,9 @@ function Inbox() {
             try {
                 //Fetch data from our API endpoint 
                 const response = await fetch('/api/checkEmail');
-                console.log('Got response:', response.status);
                 
                 //Parse Json response
                 const result = await response.json();
-                console.log('Parsed response:', result);
                 
                 //Check if response went through
                 if (!response.ok) {
@@ -30,6 +28,7 @@ function Inbox() {
                 }
                 
                 if (result.success) {
+                    console.log('Fetched emails:', result.emails); // Log the fetched emails
                     setData(result.emails); //store emails
                     setDebugInfo(result.timestamp); //store timestamp
                 } else {
@@ -65,7 +64,7 @@ function Inbox() {
                 Error: {error}
             </div>
             <div className="mt-2 text-gray-500">
-                Debug info: {debugInfo || 'No debug info available'}
+                Please try again later.
             </div>
         </div>
     );
@@ -90,9 +89,10 @@ function Inbox() {
                                 {email.subject}
                             </div>
                             <div className="mt-2 text-gray-700 whitespace-pre-wrap">
-                                {typeof email.content === 'string' 
-                                    ? email.content.slice(0, 200) + '...' 
-                                    : 'Content not available'}
+                                {"email.content" || "No content"}
+                            </div>
+                            <div className="mt-2 text-gray-500">
+                                {email.attachments && email.attachments.length}
                             </div>
                         </li>
                     ))}
