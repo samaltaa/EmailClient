@@ -99,7 +99,7 @@ function Inbox() {
                 </ul>
             ) : (
                 <p className="text-center text-gray-500">
-                    No emails found. {data ? `(${data.length} emails loaded)` : '(No data)'}
+                    No emails found... {data ? `(${data.length} emails loaded)` : '(No data)'}
                 </p>
             )}
         </div>
