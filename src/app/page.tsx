@@ -1,5 +1,5 @@
-import Contact from '@/app/components/contact';
-import Inbox from './components/inbox';
+import Contact from '@/app/uicomponents/contact';
+import Inbox from './uicomponents/inbox';
 
 export default function Home() {
   return (

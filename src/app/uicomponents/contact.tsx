@@ -3,6 +3,15 @@ import {FC} from 'react';
 import {useForm} from 'react-hook-form';
 import {sendEmail} from '@/app/utils/sendmail';
 
+/*
+TODO: 
+[]define the shape of the form using Zod schema
+[X]define the form by using the useForm hook
+[]add the styling to <form></form> using shadcn
+[]style the input fields for name, email, and message
+[]style the submit button to the form
+*/
+
 export type FormData ={
     name: string;
     email: string;
