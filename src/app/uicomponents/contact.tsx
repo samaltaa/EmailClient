@@ -3,6 +3,20 @@ import {FC} from 'react';
 import {useForm} from 'react-hook-form';
 import {sendEmail} from '@/app/utils/sendmail';
 
+"shadcn components"
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+
+
 /*
 TODO: 
 []define the shape of the form using Zod schema
