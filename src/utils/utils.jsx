@@ -1,6 +1,8 @@
+'use client'
+
 import React from "react";
 
-const showEmailList = ({ data }) => {
+export const showEmailList = ( data ) => {
     if (!data || data.length === 0) {
       return (
         <p className="text-center text-gray-500">
@@ -10,7 +12,7 @@ const showEmailList = ({ data }) => {
     }
 
     return (
-        <ul className="space-y-4">
+        <ul className="space-y-4 py-4">
             {data.map((email, index) => (
                 <li key={email.uid || index} className="border rounded-lg p-4 shadow-sm">
                 <div className="text-sm text-gray-500">
@@ -32,4 +34,3 @@ const showEmailList = ({ data }) => {
         </ul>
     )
 }
-export default showEmailList 

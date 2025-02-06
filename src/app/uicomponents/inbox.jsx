@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {showEmailList} from '@/utils/utils'
 
 function Inbox() {
     const [data, setData] = useState(null);
@@ -87,34 +88,8 @@ function Inbox() {
                     Last updated: {debugInfo}
                 </CardDescription>
             </CardHeader>
-            <CardContent>
-                {data && data.length > 0 ? (
-                    <ul className="space-y-4">
-                        {data.map((email, index) => (
-                            <li key={email.uid || index}
-                                className="border rounded-lg p-4 shadow-sm">
-                                    <div className="text-sm text-gray-500">
-                                        {new Date(email.date).toLocaleString()}
-                                    </div>
-                                    <div className="font-medium">
-                                        From: {email.from}
-                                    </div>
-                                    <div className="font-bold">
-                                        {email.subject}
-                                    </div>
-                                    <div className="mt-2 text-gray-700 whitespace-pre-wrap">
-                                        {typeof email.content === 'string'
-                                        ? email.content.slice(0, 200) + '...' 
-                                        : 'Content not available'}
-                                    </div>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-center text-gray-500">
-                        No emails found... {data ? `(${data.length} emailsloaded)` :'no data'}
-                    </p>
-                )}
+            <CardContent >
+                {showEmailList(data)}
             </CardContent>
             <CardFooter >
                 <Button variant='outline'>Refresh</Button>
