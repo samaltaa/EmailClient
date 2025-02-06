@@ -4,6 +4,15 @@ THIS COMPONENT WILL MAP() ALL THE INBOX DATA
 AND RENDER IT ON THE CLIENT SIDE 
 */
 import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 function Inbox() {
     const [data, setData] = useState(null);
@@ -71,38 +80,47 @@ function Inbox() {
     );
 
     return (
-        <div className="p-4">
-            <div className="mb-4 text-sm text-gray-500">
-                Last updated: {debugInfo}
-            </div>
-            
-            {data && data.length > 0 ? (
-                <ul className="space-y-4">
-                    {data.map((email, index) => (
-                        <li key={email.uid || index} className="border rounded-lg p-4 shadow-sm">
-                            <div className="text-sm text-gray-500">
-                                {new Date(email.date).toLocaleString()}
-                            </div>
-                            <div className="font-medium">
-                                From: {email.from}
-                            </div>
-                            <div className="font-bold">
-                                {email.subject}
-                            </div>
-                            <div className="mt-2 text-gray-700 whitespace-pre-wrap">
-                                {typeof email.content === 'string' 
-                                    ? email.content.slice(0, 200) + '...' 
-                                    : 'Content not available'}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="text-center text-gray-500">
-                    No emails found... {data ? `(${data.length} emails loaded)` : '(No data)'}
-                </p>
-            )}
-        </div>
+        <Card className="w-full">
+            <CardHeader>
+                <CardTitle>Inbox</CardTitle>
+                <CardDescription>
+                    Last updated: {debugInfo}
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                {data && data.length > 0 ? (
+                    <ul className="space-y-4">
+                        {data.map((email, index) => (
+                            <li key={email.uid || index}
+                                className="border rounded-lg p-4 shadow-sm">
+                                    <div className="text-sm text-gray-500">
+                                        {new Date(email.date).toLocaleString()}
+                                    </div>
+                                    <div className="font-medium">
+                                        From: {email.from}
+                                    </div>
+                                    <div className="font-bold">
+                                        {email.subject}
+                                    </div>
+                                    <div className="mt-2 text-gray-700 whitespace-pre-wrap">
+                                        {typeof email.content === 'string'
+                                        ? email.content.slice(0, 200) + '...' 
+                                        : 'Content not available'}
+                                    </div>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-center text-gray-500">
+                        No emails found... {data ? `(${data.length} emailsloaded)` :'no data'}
+                    </p>
+                )}
+            </CardContent>
+            <CardFooter >
+                <Button variant='outline'>Refresh</Button>
+                <Button variant='outline'>Compose</Button>
+            </CardFooter>
+        </Card>
     );
 }
 
