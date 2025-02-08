@@ -19,7 +19,7 @@ return(
             Lorem ipsum dolor, sit amet consectetur adipisicing elit.
         </p>
 
-        <div className="p-8 flex justify-start gap-4 border border-black content-center">
+        <div className="p-8 flex justify-start gap-4 border border-black items-center">
             <Link href="/contact" className="block w-full max-w-xs mx-auto aspect-square">
                 <div className="bg-pink-100 rounded-lg shadow hover:shadow-lg transition-shadow h-32 w-full flex items-center justify-center cursor-pointer">
                     {/* Add your content here */}
