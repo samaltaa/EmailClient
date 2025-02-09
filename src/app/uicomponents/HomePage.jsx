@@ -12,21 +12,21 @@ return(
         </div>
         <div className="h-32 md:h-40"></div>
         <p className="font-sans text-4xl font-bold text-black max-w-5xl lg:text-7xl lg:pr-24 md:text-6xl">
-            Placeholder for development
+            Hello Kitty theme E-mail client for bimbos.
         </p>
         <div className="h-10"></div>
         <p className="font-serif text-xl text-black md:pr-10">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+        Designed exclusively for bimbos who love all things cute and stylish!
         </p>
 
-        <div className="p-8 flex justify-start gap-4 border border-black items-center">
-            <Link href="/contact" className="block w-full max-w-xs mx-auto aspect-square">
+        <div className="p-8 flex justify-start gap-4 items-center">
+            <Link href="/pages/contact" className="block w-full max-w-xs mx-auto aspect-square">
                 <div className="bg-pink-100 rounded-lg shadow hover:shadow-lg transition-shadow h-32 w-full flex items-center justify-center cursor-pointer">
                     {/* Add your content here */}
                     <span className="text-pink-600 font-medium">Compose Email</span>
                 </div>
             </Link>
-            <Link href="/contact" className="block w-full max-w-xs mx-auto aspect-square">
+            <Link href="pages/inbox" className="block w-full max-w-xs mx-auto aspect-square">
                 <div className="bg-pink-100 rounded-lg shadow hover:shadow-lg transition-shadow h-32 w-full flex items-center justify-center cursor-pointer">
                     {/* Add your content here */}
                     <span className="text-pink-600 font-medium">View Inbox</span>

@@ -1,5 +1,5 @@
-import Contact from '@/app/uicomponents/contact';
-import Inbox from './uicomponents/inbox';
+import Contact from '@/app/pages/contact/page';
+import Inbox from './pages/inbox/page';
 import HomePage from './uicomponents/HomePage'
 
 
@@ -7,9 +7,6 @@ export default function Home() {
   return (
     <main>
       <HomePage/>
-      <h1>Email Client</h1>
-      <Inbox/>
-
     </main>
   );
 }
