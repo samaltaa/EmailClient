@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Loader from "@/app/uicomponents/Loader"
 import {showEmailList} from '@/utils/utils'
 
 function Inbox() {
@@ -57,16 +58,10 @@ function Inbox() {
         fetchEmails();
     }, []); //The empty dependency array prevents this from 
             //running infinitely on mount
-
+    
+    //TODO: make a reusable <Loading/> component for when data is being fetched 
     if (isLoading) return (
-        <div className="p-4">
-            <div className="flex justify-center items-center p-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-            <div className="text-center text-gray-500">
-                Loading emails... This might take a few seconds.
-            </div>
-        </div>
+        <Loader/>
     );
 
     if (error) return (
