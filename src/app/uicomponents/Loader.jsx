@@ -12,8 +12,8 @@ TODO:
 function Loader() {
 
     return(
-        <div className="w-[90%] flex-center h-10 p-4">
-            <div className="flex justify-center items-center p-4">
+        <div className="flex flex-col items-center justify-center border border-black w-full h-screen bg-gradient-to-br from-pink-200 to-pink-300">
+            <div className="justify-center items-center p-4">
                 <PropagateLoader color="#fa75ce"/>
             </div>
             <div className="text-center text-pink-500">
