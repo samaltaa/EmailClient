@@ -3,6 +3,9 @@ import React , {useState} from "react";
 import useFetchEmails from '../hooks/useFetchEmails'
 import Loader from "@/app/uicomponents/Loader"
 import EmailContent from "./EmailContent";
+import { MdContactMail } from "react-icons/md";
+import { BsPencilSquare } from "react-icons/bs";
+
 
 
 
@@ -18,11 +21,13 @@ function SideBar () {
         <div className="flex h-screen">
             <div className="flex flex-col h-screen w-64 bg-gradient-to-br from-pink-200 to-pink-400 text-white p-4">
                 <div className="flex justify-between gap-1 h-10 mb-4">
-                    <button className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">
+                    <button className="flex items-center gap-2 text-sm bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">
+                    <MdContactMail />
                         Contacts
                     </button>
-                    <button className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">
-                        Home
+                    <button className="flex items-center gap-2 text-sm bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">
+                        <BsPencilSquare />
+                        Compose
                     </button>
                 </div>
 
