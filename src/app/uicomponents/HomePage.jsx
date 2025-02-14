@@ -1,13 +1,17 @@
 import React from "react";
 import Link from 'next/link';
+import { IoMdBowtie } from "react-icons/io";
 
 function HomePage() {
 
 return(
-    <div className="items-center justify-center bg-gradient-to-br from-pink-100 to-pink-400">
+    <div className="items-center justify-center bg-gradient-to-br from-pink-100 to-pink-400 h-screen">
         <div className="text-black container mx-auto p-8 overflow-hidden md:rounded-lg md:p-10 lg:p-12">
             <div className="flex justify-between">
-                <h1 className="font-serif text-3xl font-medium">KittyMail</h1>
+                <h1 className="flex items-center gap-2 font-serif text-3xl font-medium">
+                <IoMdBowtie size={50}/>
+                KittyMail
+                </h1>
             </div>
         </div>
         <div className="h-32 md:h-40"></div>

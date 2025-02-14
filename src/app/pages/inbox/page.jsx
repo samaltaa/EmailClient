@@ -1,97 +1,55 @@
 'use client'
-/*
-THIS COMPONENT WILL MAP() ALL THE INBOX DATA 
-AND RENDER IT ON THE CLIENT SIDE 
-*/
-import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import React , {useState} from "react";
+import useFetchEmails from '@/app/hooks/useFetchEmails'
 import Loader from "@/app/uicomponents/Loader"
-import {showEmailList} from '@/utils/utils'
+import EmailContent from "@/app/uicomponents/EmailContent";
+import { MdContactMail } from "react-icons/md";
+import { BsPencilSquare } from "react-icons/bs";
 
-function Inbox() {
-    const [data, setData] = useState(null);
-    const [isLoading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [debugInfo, setDebugInfo] = useState(null);
 
-    //Hook runs when component mounts
-    useEffect(() => {
-        //Async function to fetch emails from our API
-        const fetchEmails = async () => {
-            try {
-                //Fetch data from our API endpoint 
-                const response = await fetch('/api/checkEmail');
-                console.log('Got response:', response.status);
-                
-                //Parse Json response
-                const result = await response.json();
-                console.log('Parsed response:', result);
-                
-                //Check if response went through
-                if (!response.ok) {
-                    throw new Error(result.error || `HTTP error! status: ${response.status}`);
-                }
-                
-                if (result.success) {
-                    setData(result.emails); //store emails
-                    setDebugInfo(result.timestamp); //store timestamp
-                } else {
-                    throw new Error(result.error || 'Failed to load emails');
-                }
-            } catch (err) {
-                console.error('Fetch error:', err);
-                setError(err.message);
-            } finally {
-                setLoading(false); //Turn off loading state
-            }
-        };
 
-        //Execite the fetching function
-        fetchEmails();
-    }, []); //The empty dependency array prevents this from 
-            //running infinitely on mount
+
+function SideBar () {
+    const { emails, loading, error } = useFetchEmails();
+    const [selectedEmail, setSelectedEmail] = useState(null);
     
-    //TODO: make a reusable <Loading/> component for when data is being fetched 
-    if (isLoading) return (
+    if (loading) return (
         <Loader/>
     );
 
-    if (error) return (
-        <div className="p-4">
-            <div className="text-red-600 bg-red-50 rounded-md p-4">
-                Error: {error}
-            </div>
-            <div className="mt-2 text-gray-500">
-                Debug info: {debugInfo || 'No debug info available'}
-            </div>
-        </div>
-    );
-
     return (
-        <Card className="w-full">
-            <CardHeader>
-                <CardTitle>Inbox</CardTitle>
-                <CardDescription>
-                    Last updated: {debugInfo}
-                </CardDescription>
-            </CardHeader>
-            <CardContent >
-                {showEmailList(data)}
-            </CardContent>
-            <CardFooter >
-                <Button variant='outline'>Refresh</Button>
-                <Button variant='outline'>Compose</Button>
-            </CardFooter>
-        </Card>
-    );
+        <div className="flex h-screen">
+            <div className="flex flex-col h-screen w-64 bg-gradient-to-br from-pink-200 to-pink-400 text-white p-4">
+                <div className="flex justify-between gap-1 h-10 mb-4">
+                    <button className="flex items-center gap-2 text-sm bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">
+                    <MdContactMail />
+                        Contacts
+                    </button>
+                    <button className="flex items-center gap-2 text-sm bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">
+                        <BsPencilSquare />
+                        Compose
+                    </button>
+                </div>
+
+                <div className="overflow-y-auto">
+                    {emails.map((email) => (
+                            <div key={email.uid} 
+                            className="p-2 bg-pink-300 hover:bg-gray-700 
+                            cursor-pointer border border-pink-500"
+                            onClick={() => setSelectedEmail(email)}
+                            >
+                                <div className="font-bold text-sm">{email.subject}</div>
+                                <div className="text-xs text-gray-400">{email.from}</div>
+                            </div>
+                        ))}
+                </div>
+                
+            </div>
+            <div className="flex-1 flex justify-center">
+                {selectedEmail && <EmailContent email={selectedEmail}/>}
+            </div>
+       </div>
+    )
 }
 
-export default Inbox;
+export default SideBar
