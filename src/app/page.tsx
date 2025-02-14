@@ -8,7 +8,7 @@ import EmailContent from './uicomponents/EmailContent'
 export default function Home() {
   return (
     <main>
-      <EmailContent/>
+      <SideBar/>
       <HomePage/>
     </main>
   );
