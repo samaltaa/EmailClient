@@ -40,7 +40,7 @@ async function fetchEmails() {
             const emails = [];
             // Fetch only the last 5 emails for testing
             //fetch() returns an async iterator of the emails
-            for await (const message of client.fetch('1:5', {
+            for await (const message of client.fetch('1:15', {
                 envelope: true,
                 bodyStructure: true,
                 source: true,
