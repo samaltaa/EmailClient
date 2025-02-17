@@ -1,6 +1,9 @@
 import React from "react";
 import Link from 'next/link';
 import { IoMdBowtie } from "react-icons/io";
+import backgroundImage from '../images/hellowriting.png';
+import backgroundImage2 from '../images/helloinbox.png';
+
 
 function HomePage() {
 
@@ -25,13 +28,27 @@ return(
 
         <div className="p-8 flex justify-start gap-4 items-center">
             <Link href="/pages/contact" className="block w-full max-w-xs mx-auto aspect-square">
-                <div className="bg-pink-100 rounded-lg shadow hover:shadow-lg transition-shadow h-32 w-full flex items-center justify-center cursor-pointer">
-                    <span className="text-pink-600 font-medium">Compose Email</span>
+                <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow h-32 w-full flex items-center justify-center cursor-pointer"
+                        style={{ 
+                            backgroundImage: `url(${backgroundImage.src})`,
+                            backgroundSize: "contain",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat"
+                        }}
+                >
+                    <span className="text-pink-600 text-xl font-bold">Compose Email</span>
                 </div>
             </Link>
             <Link href="pages/inbox" className="block w-full max-w-xs mx-auto aspect-square">
-                <div className="bg-pink-100 rounded-lg shadow hover:shadow-lg transition-shadow h-32 w-full flex items-center justify-center cursor-pointer">
-                    <span className="text-pink-600 font-medium">View Inbox</span>
+                <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow h-32 w-full flex items-center justify-center cursor-pointer"
+                    style={{ 
+                        backgroundImage: `url(${backgroundImage2.src})`,
+                        backgroundSize: "contain",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat"
+                    }}
+                    >
+                    <span className="text-pink-600 font-bold">View Inbox</span>
                 </div>
             </Link>
         </ div>
