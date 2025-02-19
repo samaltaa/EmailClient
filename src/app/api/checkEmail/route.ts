@@ -24,6 +24,11 @@ const createClient = () => new ImapFlow({
     },
 });
 
+//Stream to buffer function
+async function streamToBuffer(){
+    const chunks = [];
+}
+
 //Main function to fetch emails from the IMAP server
 async function fetchEmails() {
     const client = createClient();
