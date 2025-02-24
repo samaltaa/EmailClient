@@ -25,8 +25,22 @@ const createClient = () => new ImapFlow({
 });
 
 //Stream to buffer function
-async function streamToBuffer(){
-    const chunks = [];
+async function streamToBuffer(readableStream: NodeJS.ReadableStream){
+    return new Promise<Buffer>((resolve, reject) => {
+        const chunks = [];
+        readableStream.on('data', (chunk) =>{
+            chunks.push(chunk);
+            console.log('Data chunk received:', chunk);
+        });
+        readableStream.on('end', () => {
+            resolve(Buffer.concat(chunks))  ;   
+            console.log('Stream ended, buffer created');
+        })
+        readableStream.on('error', (error) =>{
+            console.error('Error in stream:', error);
+            reject(error);
+        })
+    })
 }
 
 //Main function to fetch emails from the IMAP server
