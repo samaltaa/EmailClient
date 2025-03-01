@@ -71,7 +71,10 @@ async function fetchEmails() {
 
 
                     //TODO: Convert stream to buffer and parse
-                    
+                    if (message.source){
+                        const buffer = await streamToBuffer(message.source as NodeJS.ReadableStream)
+                        const parsedEmail = await simpleParser(buffer)
+                    }
 
                     //Extract relevant information from each message
                     emails.push({
