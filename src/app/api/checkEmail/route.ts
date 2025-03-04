@@ -72,48 +72,80 @@ async function streamToBuffer(readableStream: any): Promise<Buffer> {
                 envelope: true,
                 bodyStructure: true,
                 source: true,
-                // Simplified fetch options
                 bodies: ['TEXT', 'HEADER', 'HTML']
             })) {
                 try {
                     let parsedEmail;
                     let emailContent = '';
+                    let htmlContent = '';
 
-                    // Try parsing from different sources
+                    // Log raw message structure for debugging
+                    console.log('Message UID:', message.uid);
+                    console.log('Message body keys:', message.body ? Object.keys(message.body) : 'No body');
+
+                    // Try parsing TEXT body
                     if (message.body?.TEXT) {
                         try {
                             emailContent = message.body.TEXT.toString();
-                            parsedEmail = await simpleParser(emailContent);
-                        } catch (textParseError) {
-                            console.error('Error parsing TEXT:', textParseError);
+                            console.log('TEXT content length:', emailContent.length);
+                        } catch (textError) {
+                            console.error('Error converting TEXT:', textError);
                         }
                     }
 
-                    // Fallback to source if TEXT parsing fails
-                    if (!parsedEmail && message.source) {
+                    // Try parsing HTML body
+                    if (message.body?.HTML) {
+                        try {
+                            htmlContent = message.body.HTML.toString();
+                            console.log('HTML content length:', htmlContent.length);
+                        } catch (htmlError) {
+                            console.error('Error converting HTML:', htmlError);
+                        }
+                    }
+
+                    // Fallback to source if no body content
+                    if ((!emailContent && !htmlContent) && message.source) {
                         try {
                             const buffer = await streamToBuffer(message.source);
-                              parsedEmail = await simpleParser(buffer);
+                            parsedEmail = await simpleParser(buffer);
+                            
+                            emailContent = parsedEmail.text || '';
+                            htmlContent = parsedEmail.html || '';
+                            
+                            console.log('Parsed email content lengths:', {
+                                text: emailContent.length,
+                                html: htmlContent.length
+                            });
                         } catch (sourceParseError) {
                             console.error('Error parsing source:', sourceParseError);
                         }
                     }
 
+                    // Determine the best content to display
+                    const displayContent = htmlContent || emailContent || 'No content available';
+
                     // Extract and push email information
                     emails.push({
                         uid: message.uid,
-                        subject: parsedEmail?.subject || message.envelope?.subject || 'No Subject',
-                        from: parsedEmail?.from?.text || message.envelope?.from?.[0]?.address || 'Unknown',
-                        date: parsedEmail?.date || message.envelope?.date || new Date(),
-                        textContent: parsedEmail?.text || emailContent || 'No text content',
-                        htmlContent: parsedEmail?.html || message.body?.HTML?.toString() || null,
-                        content: emailContent || 'No content'
+                        subject: message.envelope?.subject || 'No Subject',
+                        from: message.envelope?.from?.[0]?.address || 'Unknown',
+                        date: message.envelope?.date || new Date(),
+                        textContent: emailContent,
+                        htmlContent: htmlContent,
+                        content: displayContent
+                    });
+
+                    // Log each email's content for verification
+                    console.log(`Email ${message.uid} content:`, {
+                        subject: message.envelope?.subject,
+                        contentLength: displayContent.length
                     });
                 } catch (messageError) {
-                    console.error('Error processing message:', messageError);
+                    console.error('Error processing individual message:', messageError);
                 }
             }
             
+            console.log('Total emails fetched:', emails.length);
             return emails;
         } finally {
             lock.release();
