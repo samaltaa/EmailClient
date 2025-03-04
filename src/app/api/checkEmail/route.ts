@@ -24,69 +24,90 @@ const createClient = () => new ImapFlow({
     },
 });
 
-//Stream to buffer function
-async function streamToBuffer(readableStream: NodeJS.ReadableStream){
-    return new Promise<Buffer>((resolve, reject) => {
-        const chunks = [];
-        readableStream.on('data', (chunk) =>{
-            chunks.push(chunk);
-            console.log('Data chunk received:', chunk);
-        });
-        readableStream.on('end', () => {
-            resolve(Buffer.concat(chunks))  ;   
-            console.log('Stream ended, buffer created');
-        })
-        readableStream.on('error', (error) =>{
-            console.error('Error in stream:', error);
-            reject(error);
-        })
-    })
-}
-
-//Main function to fetch emails from the IMAP server
-async function fetchEmails() {
+async function streamToBuffer(readableStream: any): Promise<Buffer> {
+    // If it's already a buffer or string, convert directly
+    if (Buffer.isBuffer(readableStream)) {
+      return readableStream;
+    }
+    
+    if (typeof readableStream === 'string') {
+      return Buffer.from(readableStream);
+    }
+  
+    // Check if it's an async iterable (modern stream interface)
+    if (readableStream[Symbol.asyncIterator]) {
+      const chunks: Buffer[] = [];
+      for await (const chunk of readableStream) {
+        chunks.push(Buffer.from(chunk));
+      }
+      return Buffer.concat(chunks);
+    }
+  
+    // Try using Buffer.from directly
+    try {
+      return Buffer.from(readableStream);
+    } catch (err) {
+      // If all else fails, try toString method
+      if (typeof readableStream.toString === 'function') {
+        return Buffer.from(readableStream.toString());
+      }
+  
+      console.error('Could not convert stream to buffer:', err);
+      throw new Error('Unable to convert stream to buffer');
+    }
+  }
+  
+  //
+  async function fetchEmails() {
     const client = createClient();
     
     try {
-        //Establish connection to the IMAP server
         await client.connect();
-        
-        //Use a lock on the INBOX mailbox
-        //Locks prevent simultanous operations from interferring with our current operation
         const lock = await client.getMailboxLock('INBOX');
         
         try {
             const emails = [];
-            // Fetch only the last 5 emails for testing
-            //fetch() returns an async iterator of the emails
+            
             for await (const message of client.fetch('1:15', {
                 envelope: true,
                 bodyStructure: true,
                 source: true,
-               //TODO: bodyParts: ['TEXT', 'HEADER'], // Request email content
+                // Simplified fetch options
+                bodies: ['TEXT', 'HEADER', 'HTML']
             })) {
                 try {
-                    
-                    //TODO: Download the full email content 
+                    let parsedEmail;
+                    let emailContent = '';
 
-
-                    //TODO: Convert stream to buffer and parse
-                    if (message.source){
-                        const buffer = await streamToBuffer(message.source as NodeJS.ReadableStream)
-                        const parsedEmail = await simpleParser(buffer)
+                    // Try parsing from different sources
+                    if (message.body?.TEXT) {
+                        try {
+                            emailContent = message.body.TEXT.toString();
+                            parsedEmail = await simpleParser(emailContent);
+                        } catch (textParseError) {
+                            console.error('Error parsing TEXT:', textParseError);
+                        }
                     }
 
-                    //Extract relevant information from each message
+                    // Fallback to source if TEXT parsing fails
+                    if (!parsedEmail && message.source) {
+                        try {
+                            const buffer = await streamToBuffer(message.source);
+                              parsedEmail = await simpleParser(buffer);
+                        } catch (sourceParseError) {
+                            console.error('Error parsing source:', sourceParseError);
+                        }
+                    }
+
+                    // Extract and push email information
                     emails.push({
                         uid: message.uid,
-                        subject: message.envelope?.subject || 'No Subject',
-                        from: message.envelope?.from?.[0]?.address || 'Unknown',
-                        date: message.envelope?.date || new Date(),
-                        //TODO: get plain text content and HTML content if possible
-
-
-                        // For testing, just get the raw source
-                        content: message.source?.toString() || 'No content'
+                        subject: parsedEmail?.subject || message.envelope?.subject || 'No Subject',
+                        from: parsedEmail?.from?.text || message.envelope?.from?.[0]?.address || 'Unknown',
+                        date: parsedEmail?.date || message.envelope?.date || new Date(),
+                        textContent: parsedEmail?.text || emailContent || 'No text content',
+                        htmlContent: parsedEmail?.html || message.body?.HTML?.toString() || null,
+                        content: emailContent || 'No content'
                     });
                 } catch (messageError) {
                     console.error('Error processing message:', messageError);
@@ -94,25 +115,21 @@ async function fetchEmails() {
             }
             
             return emails;
-            
         } finally {
-            //Release the lock when done
             lock.release();
         }
     } catch (error) {
         console.error('Error in fetchEmails:', error);
         throw error;
     } finally {
-        //Logout once done
         try {
             await client.logout();
-
         } catch (logoutError) {
             console.error('Error during logout:', logoutError);
         }
     }
 }
-
+  
 //API handler for GET requests 
 export async function GET(req: NextRequest) {
     
