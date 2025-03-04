@@ -34,3 +34,25 @@ export const showEmailList = ( data ) => {
         </ul>
     )
 }
+
+export function stripHtmlTags(html: string): string {
+    //Remove script and style elements 
+    html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    html = html.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+    
+    // replace HTML tages with spaces 
+    html = html.replace(/<[^>]*>/g, ' ');
+
+    // decode html entities 
+    html = html.replace(/&nbsp;/g, ' ')
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&quot;/g, '"')
+                .replace(/&#039;/g, "'");
+
+     // Remove extra whitespace
+     html = html.replace(/\s+/g, ' ').trim();
+    
+     return html;
+}
